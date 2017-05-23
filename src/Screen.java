@@ -142,6 +142,9 @@ public class Screen extends JPanel implements Runnable{
 							}
 						}
 					}
+					if(thing.getY()>screenH){
+						reset();
+					}
 					try{
 						Thread.sleep(1);
 					}catch(Exception e) { }
