@@ -38,10 +38,10 @@ public class Player extends GameObject{
 				}
 
 			}		
-			if(x < Screen.fin.getX() - RAIDUS/2 ){
+			if(x < Screen.fin.getX() - RAIDUS/2 && !overHeadPlat){
 				dx = 3;
 			}
-			if( x > Screen.fin.getX() + RAIDUS/2) {
+			if( x > Screen.fin.getX() + RAIDUS/2&& !overHeadPlat) {
 				dx = -3;
 			}
 			//on edge of platform
