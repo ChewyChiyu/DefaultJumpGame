@@ -11,16 +11,22 @@ import javax.swing.KeyStroke;
 @SuppressWarnings("serial")
 public class Screen extends JPanel implements Runnable{
 	Thread loop;
-	boolean isRunning;
+	protected static boolean isRunning;
+	protected static Finish fin;
+	protected static ArrayList<GameObject> sprites = new ArrayList<GameObject>(); 
 	final int screenW = Toolkit.getDefaultToolkit().getScreenSize().width/2;
 	final int screenH = Toolkit.getDefaultToolkit().getScreenSize().height;
-	ArrayList<GameObject> sprites = new ArrayList<GameObject>(); 
-	Player thing = new Player((int)(screenW*.1),(int)(screenH*.7));
+	Player thing = new Player((int)(screenW*.1),(int)(screenH*.7),false);
+	
 	protected Screen(){
 		panel();
 		platforms();
 		keys();
 		start();
+		addAI();
+	}
+	void addAI(){
+		sprites.add(new Player((int)(screenW*.1),(int)(screenH*.7),true));
 	}
 	void platforms(){
 		int xBuffer = 0;
@@ -28,7 +34,8 @@ public class Screen extends JPanel implements Runnable{
 		sprites.add(new Platform(0,screenH-200));
 		for(int index = 0; index < 7; index++){
 			if(index==6){
-				sprites.add(new Finish(xBuffer+Platform.W/2,yBuffer-Finish.RAIDUS));
+				fin = new Finish(xBuffer+Platform.W/2,yBuffer-Finish.RAIDUS);
+				sprites.add(fin);
 			}
 			sprites.add(new Platform(xBuffer,yBuffer));
 			switch((int)(Math.random()*4)){
@@ -135,16 +142,22 @@ public class Screen extends JPanel implements Runnable{
 								if(o2 instanceof Finish){
 									int o2x1 = o2.getX(), o2x2 = o2.getX() + Finish.RAIDUS;
 									int o2y1 = o2.getY(), o2y2 = o2.getY() + Finish.RAIDUS;
-									if(o.getX() > o2x1 && o.getX() < o2x2 && o.getY()+Player.RAIDUS/2 > o2y1 && o.getY()+Player.RAIDUS/2 < o2y2){
+									if(o.getX()+Player.RAIDUS/2 > o2x1 && o.getX()+Player.RAIDUS/2 < o2x2 && o.getY()+Player.RAIDUS/2 > o2y1 && o.getY()+Player.RAIDUS/2 < o2y2){
 										reset();
 									}
 								}
 							}
 						}
 					}
-					if(thing.getY()>screenH){
-						reset();
+					for(int index = 0; index < sprites.size(); index++){
+						GameObject o = sprites.get(index);
+						if( o instanceof Player){
+							if(o.getY()>screenH){
+								reset();
+							}
+						}
 					}
+			
 					try{
 						Thread.sleep(1);
 					}catch(Exception e) { }
@@ -156,8 +169,9 @@ public class Screen extends JPanel implements Runnable{
 	void reset(){
 		sprites.clear();
 		platforms();
-		thing = new Player((int)(screenW*.1),(int)(screenH*.5));
+		thing = new Player((int)(screenW*.1),(int)(screenH*.5),false);
 		sprites.add(thing);
+		addAI();
 	}
 	void panel(){
 		JFrame frame = new JFrame("DEFAULT GAME");
