@@ -22,33 +22,29 @@ public class Player extends GameObject{
 		if(auto)
 			automated.start();
 	}
+
 	void think() {
 		synchronized(Screen.sprites){
-			Platform currentPlat = null;
 			boolean  overHeadPlat = false;
 			for(int index = 0; index < Screen.sprites.size(); index++){
 				GameObject o = Screen.sprites.get(index);
 				if(o instanceof Platform){
-					if((y+RAIDUS)- o.getY() < 3 && o.getX() < x && o.getX() + Platform.W > x){
-						currentPlat = ((Platform) o);
-					}
-					if(!inAir&& (o.getY() - (y-50))>-10 && (o.getY() - (y-50))<50 && o.getX()-RAIDUS*2 < x+RAIDUS/2 && o.getX() + Platform.W + RAIDUS*2 > x+RAIDUS/2){
+					if(!inAir&& (o.getY() - (y-40))>-10 && (o.getY() - (y-40))<40 && o.getX()-RAIDUS*2 < x+RAIDUS/2 && o.getX() + Platform.W + RAIDUS*2 > x+RAIDUS/2){
 						overHeadPlat = true;
 					}
 				}
-
 			}		
-			if(x < Screen.fin.getX() - RAIDUS/2 && !overHeadPlat){
-				dx = 3;
-			}
-			if( x > Screen.fin.getX() + RAIDUS/2&& !overHeadPlat) {
-				dx = -3;
-			}
+				if(x < Screen.fin.getX() - RAIDUS/2 && (y <= Screen.fin.getY() || !overHeadPlat)){
+					dx = 3;
+				}
+				if( x > Screen.fin.getX() + RAIDUS/2 && (y <= Screen.fin.getY() || !overHeadPlat)) {
+					dx = -3;
+				}
 			//on edge of platform
-			if(currentPlat==null){return;}
 			if(overHeadPlat){
 				jump();
 			}
+			
 
 		}
 	}
